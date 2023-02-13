@@ -13,13 +13,13 @@
 
                 
                     
-                var  rule1 = new Tuple<Func<order, bool> , Func<order, double>>(IsHighPriceProduct , discountForHighPriceOrder);
-                var  rule2 = new Tuple<Func<order, bool> , Func<order, double> >(IsNewProduct , discountForNewOrder);
-                var  rule3 = new Tuple<Func<order, bool> , Func<order, double> >(IsBigQuantity , discountForBigorder);
+                (Func<order, bool>  creteria,  Func<order, double> calculator)  rule1 =  (IsHighPriceProduct , discountForHighPriceOrder);
+                (Func<order, bool> creteria, Func<order, double> calculator)  rule2 = (IsNewProduct , discountForNewOrder);
+                (Func<order, bool> creteria, Func<order, double> calculator)  rule3 =  (IsBigQuantity , discountForBigorder);
 
-                var rules = new List<Tuple<Func<order, bool> , Func<order, double>>>{rule1 , rule2 , rule3};
+                var rules = new List<(Func<order, bool> , Func<order, double>)>{rule1 , rule2 , rule3};
 
-                Func<order,List<Tuple<Func<order, bool> , Func<order, double>>>, List<Func<order, double>>> calculators = GetCalculators;
+                Func<order,List<(Func<order, bool> , Func<order, double>)>, List<Func<order, double>>> calculators = GetCalculators;
 
                 List<order> orders = new List<order> {
                     new order{
@@ -47,8 +47,8 @@
          Console.WriteLine(discounts.First());
     }
     
-        public static List<Func<order, double>> GetCalculators(order order , List<Tuple< Func<order, bool> , Func<order, double>>> rules){
-            return rules.Where(r=> r.Item1(order)).Select(r=>r.Item2).Take(3).ToList();
+        public static List<Func<order, double>> GetCalculators(order order , List<(Func<order, bool> creteria , Func<order, double> calculator)> rules){
+            return rules.Where(r=> r.creteria(order)).Select(r=>r.calculator).Take(3).ToList();
         }
 
 
